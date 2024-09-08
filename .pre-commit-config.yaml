@@ -1,0 +1,22 @@
+repos:
+  - repo: local
+    hooks:
+      - id: maven-spotless-apply
+        name: Maven Spotless Apply
+        entry: sh -c "mvn spotless:apply"
+        language: system
+        types: [ java ]
+        files: \.java$
+      - id: maven-format
+        name: Maven Format
+        entry:  sh -c "mvn spotless:check"
+        language: system
+        types: [java]
+        files: \.java$
+
+      - id: maven-checkstyle
+        name: Maven Checkstyle
+        entry: sh -c "mvn checkstyle:check"
+        language: system
+        types: [java]
+        files: \.java$
