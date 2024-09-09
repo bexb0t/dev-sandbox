@@ -37,16 +37,13 @@ java -jar target/dev-sandbox-0.0.1-SNAPSHOT.jar
 ```
 This will start the Spring Boot application. By default, it will be accessible at `http://localhost:8080`.
 
-### Testing
+## Testing
 To run tests you can run make with the target `test`:
 ```Copy code
 make test
 ```
+## Logs
+Logs are configured to write to the `logs` directory. 
 
-- **Verify Maven Dependencies** : Ensure all dependencies are resolved correctly by running:
-
-```Copy code
-mvn dependency:resolve
-```
 ## License
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/bexb0t/dev-sandbox/blob/main/LICENSE)  file for details.
