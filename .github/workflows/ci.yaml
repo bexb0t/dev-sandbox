@@ -1,0 +1,35 @@
+name: Java CI with Maven
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Cache packages to speed up build
+        uses: actions/cache@v1
+        with:
+          # 'm2' is the default directory maven uses to store its local repo
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Checkstyle
+        run: mvn checkstyle:check --file pom.xml
+      - name: Format code
+        run: mvn spotless:check --file pom.xml
+      - name: Build and test with Maven
+        run: mvn -B package --file pom.xml
+      # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+        with:
+          token: ${{ secrets.CI_ACCESS_TOKEN }}
