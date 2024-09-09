@@ -22,7 +22,7 @@ jobs:
       - name: Checkstyle
         run: mvn checkstyle:check --file pom.xml
       - name: Format code
-        run: mvn formatter:format --file pom.xml
+        run: mvn spotless:check --file pom.xml
       - name: Cache packages to speed up build
         uses: actions/cache@v1
         with:
