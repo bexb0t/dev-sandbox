@@ -1,28 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!-- Log file location -->
-        <file>logs/${spring.application.name}.log</file>
 
-        <!-- Log file rolling policy -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!-- Log file name pattern -->
-            <fileNamePattern>logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+    <!-- Setting up log path and log file name -->
+    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_FILE_NAME" value="dev-sandbox" />
 
-            <!-- Maximum size of a single log file before rolling -->
-            <maxFileSize>10MB</maxFileSize>
-
-            <!-- Maximum number of rolled files to keep -->
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-
-        <!-- Log file layout pattern -->
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
+    <!-- Setting up logging pattern for console logging -->
+    <appender name="ConsoleOutput"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %white(%d{ISO8601}) %highlight(%-5level) [%yellow(%t)] : %msg%n%throwable
+            </Pattern>
+        </layout>
     </appender>
 
-    <!-- Root logger configuration -->
+    <!-- Setting the filename and logging pattern for log file -->
+    <appender name="LogFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level : %msg%n
+            </Pattern>
+        </encoder>
+
+        <!-- Setting up a rolling policy with rolling done
+              daily and when file size is 10MB-->
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archived/${LOG_FILE_NAME}-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Logging at INFO level -->
     <root level="info">
-        <appender-ref ref="FILE" />
+        <appender-ref ref="LogFile" />
+        <appender-ref ref="ConsoleOutput" />
     </root>
+
+    <!-- Logging at TRACE level -->
+    <logger name="com.log" level="trace" additivity="false">
+        <appender-ref ref="LogFile" />
+        <appender-ref ref="ConsoleOutput" />
+    </logger>
+
 </configuration>
